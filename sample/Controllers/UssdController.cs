@@ -14,7 +14,6 @@ namespace SampleApplication.Controllers
         {
             this.server = server;
 
-
             this.server.AddRoute(new UssdRoute
             {
                 Code = "000",
@@ -55,7 +54,7 @@ namespace SampleApplication.Controllers
             {
                 Code = "000",
                 Prev = "welcome",
-                Regx = (_, req) => req.Text != "1" && req.Text != "2",
+                Regx = (_, req) => req.Text != "1" && req.Text != "2",  //Regx could also be used for input validation like input length check, etc.
                 Goto = "welcome"
             });
 
@@ -67,7 +66,7 @@ namespace SampleApplication.Controllers
                      return await Task.FromResult(new UssdResponse
                      {
                          Status = true,
-                         Message = "CON Welcome.\nEnter \n1. To say hello \n2. To say goodbye \n3. Anything else to repeat"
+                         Message = "CON Welcome.\nEnter \n1. To say hello \n2. To say goodbye \n3. To repeat"
                      });
                  }},
 
@@ -97,12 +96,12 @@ namespace SampleApplication.Controllers
             try
             {
                 var result = await server.HandleAsync(model);
-                return new OkObjectResult(result);
+                return Ok(result);
             }
             catch (Exception ex)
             {
                 await server.DeleteAsync(model.SessionId);
-                return Ok(ex is KeyNotFoundException ? "END Invalid ussd code" : "END An error occurred");
+                return Ok($"END An error occurred: {ex.Message}");
             }
         }
     }

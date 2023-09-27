@@ -13,15 +13,17 @@ namespace UssdBuilder.Services
         private readonly IDistributedCache _cache;
         private readonly DistributedCacheEntryOptions _cacheOptions;
         private readonly Dictionary<string, Dictionary<string, Func<UssdScreen, UssdRequest, Task<UssdResponse>>>> _handlers = new();
+        private readonly UssdServerOption _serverOptions;
         private readonly List<UssdRoute> _routes = new();
 
         public string BackButton { get; set; } = "0";
         public string HomeButton { get; set; } = "00";
 
-        public UssdServer(IDistributedCache cache, IOptions<DistributedCacheEntryOptions> cacheOptions)
+        public UssdServer(IDistributedCache cache, IOptions<DistributedCacheEntryOptions> cacheOptions, IOptions<UssdServerOption> serverOptions)
         {
             _cache = cache;
             _cacheOptions = cacheOptions.Value;
+            _serverOptions = serverOptions.Value;
          }
 
         public IQueryable<string> GetCodes()
@@ -76,13 +78,20 @@ namespace UssdBuilder.Services
         {
             var result = string.Empty;
 
-            var chunks = request.Text.Split('*', '#').Where(s => !string.IsNullOrWhiteSpace(s));
-
-            if (chunks.Any())
+            if (_serverOptions.EnableInputSplit && _serverOptions.InputSplitSeparators?.Length > 0)
             {
-                foreach (var item in chunks)
+                var chunks = request.Text.Split(_serverOptions.InputSplitSeparators).Where(s => !string.IsNullOrWhiteSpace(s));
+
+                if (chunks.Any())
                 {
-                    result = await HandleScreenAsync(request with { Text = item });
+                    foreach (var item in chunks)
+                    {
+                        result = await HandleScreenAsync(request with { Text = item });
+                    }
+                }
+                else
+                {
+                    result = await HandleScreenAsync(request);
                 }
             }
             else

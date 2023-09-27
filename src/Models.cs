@@ -48,4 +48,17 @@ namespace UssdBuilder.Models
         /// </summary>
         public string Goto { get; set; }
     }
+
+    
+    public class UssdServerOption
+    {
+        /// <summary>
+        /// Enables ussd input split. Default is true 
+        /// </summary>
+        public bool EnableInputSplit { get; set; }
+        /// <summary>
+        /// Ussd input split separators. Default is ['*', '#'] 
+        /// </summary>
+        public char[] InputSplitSeparators { get; set; }
+    }
 }

@@ -7,13 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 # region ussd-builder-specific-requirements
 
-builder.Services.AddDistributedMemoryCache(); //any IDistributedCache impl will work
+builder.Services.AddDistributedMemoryCache(); // any implementation of IDistributedCache works, visit https://learn.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-6.0
 builder.Services.Configure<DistributedCacheEntryOptions>(opts =>
 {
     opts.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30); //ussd session timeout
 });
 
-builder.Services.AddUssdServer(); //or builder.Services.AddSingleton<IUssdServer, UssdServer>();
+builder.Services.AddUssdServer();
 
 # endregion
 
