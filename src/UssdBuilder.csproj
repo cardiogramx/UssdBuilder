@@ -1,9 +1,32 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <Title>UssdBuilder</Title>
+    <Copyright>Felix Kolawole</Copyright>
+    <PackageProjectUrl>https://github.com/cardiogramx/UssdBuilder</PackageProjectUrl>
+    <Description>A lightweight and lightning-fast ussd library for advocates of clean and scalable code.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/cardiogramx/UssdBuilder</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>ussd;chippercall;africastalking</PackageTags>
+    <PackAsTool>True</PackAsTool>
+    <Authors>cardiogramx</Authors>
+    <Company>Felix Kolawole</Company>
+    <Product>Ussd Builder</Product>
+    <NeutralLanguage>en-GB</NeutralLanguage>
+    <IsPublishable>True</IsPublishable>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
