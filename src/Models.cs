@@ -1,3 +1,5 @@
+using System;
+
 namespace UssdBuilder.Models
 {
     /// <summary>
