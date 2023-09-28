@@ -6,18 +6,18 @@ namespace SampleApplication.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UssdController : ControllerBase
+    public class DefaultController : ControllerBase
     {
-        private readonly IUssdServer server;
+        private readonly IUssdServer<UssdRequest> server;
 
-        public UssdController(IUssdServer server)
+        public DefaultController(IUssdServer<UssdRequest> server)
         {
             this.server = server;
 
             this.server.AddRoute(new UssdRoute
             {
                 Code = "000",
-                Prev = null,
+                Prev = null, //no previous screen means this is a new ussd session
                 Regx = (_, _) => true, //use this if you want your request to proceed regardless of user input
                 Goto = "welcome"
             });
@@ -62,30 +62,39 @@ namespace SampleApplication.Controllers
             this.server.AddHandlers("000", new()
             {
                  {"welcome", async (UssdScreen current, UssdRequest request) => {
+                    
+                    //do some async work
+                    await DoSomeWork();
 
-                     return await Task.FromResult(new UssdResponse
-                     {
-                         Status = true,
-                         Message = "CON Welcome.\nEnter \n1. To say hello \n2. To say goodbye \n3. To repeat"
-                     });
+                    return new UssdResponse
+                    {
+                        Status = true,
+                        Message = "CON Welcome to Sample Ussd.\nEnter \n1. To say hello \n2. To say goodbye \n3. To repeat"
+                    };
                  }},
 
                  {"sayhello", async (UssdScreen current, UssdRequest request) => {
-
-                     return await Task.FromResult(new UssdResponse
-                     {
-                         Status = true,
-                         Message = $"END Hello world. User input was {request.Text}"
-                     });
+                    
+                    //do some async work
+                    await DoSomeWork();
+                    
+                    return new UssdResponse
+                    {
+                        Status = true,
+                        Message = $"END Hello world. User input was {request.Text}"
+                    };
                  }},
                  
                  {"goodbye", async (UssdScreen current, UssdRequest request) => {
-
-                     return await Task.FromResult(new UssdResponse
-                     {
-                         Status = true,
-                         Message = $"END Goodbye. User input was {request.Text}"
-                     });
+                    
+                    //do some async work
+                    await DoSomeWork();
+                    
+                    return new UssdResponse
+                    {
+                        Status = true,
+                        Message = $"END Goodbye. User input was {request.Text}"
+                    };
                  }},
             });
         }
@@ -103,6 +112,11 @@ namespace SampleApplication.Controllers
                 await server.DeleteAsync(model.SessionId);
                 return Ok($"END An error occurred: {ex.Message}");
             }
+        }
+
+        private async Task DoSomeWork()
+        {
+            await Task.CompletedTask;
         }
     }
 }

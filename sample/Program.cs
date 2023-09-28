@@ -13,7 +13,8 @@ builder.Services.Configure<DistributedCacheEntryOptions>(opts =>
     opts.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30); //ussd session timeout
 });
 
-builder.Services.AddUssdServer();
+builder.Services.AddUssdServer(); //To add server for the default ussd request
+// builder.Services.AddUssdServerFor<SampleApplication.Models.CustomRequest>(); //To add server for custom ussd request
 
 # endregion
 

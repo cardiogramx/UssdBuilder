@@ -8,11 +8,11 @@ namespace UssdBuilder.Services
     /// <summary>
     /// Default implementation of <see cref="IUssdServer"/>.
     /// </summary>
-    public class UssdServer : IUssdServer
+    public class UssdServer<TRequest> : IUssdServer<TRequest> where TRequest : IUssdRequest
     {
         private readonly IDistributedCache _cache;
         private readonly DistributedCacheEntryOptions _cacheOptions;
-        private readonly Dictionary<string, Dictionary<string, Func<UssdScreen, UssdRequest, Task<UssdResponse>>>> _handlers = new();
+        private readonly Dictionary<string, Dictionary<string, Func<UssdScreen, TRequest, Task<UssdResponse>>>> _handlers = new();
         private readonly UssdServerOption _serverOptions;
         private readonly List<UssdRoute> _routes = new();
 
@@ -51,12 +51,12 @@ namespace UssdBuilder.Services
             }
         }
 
-        public void AddHandlers(string code, Dictionary<string, Func<UssdScreen, UssdRequest, Task<UssdResponse>>> runners)
+        public void AddHandlers(string code, Dictionary<string, Func<UssdScreen, TRequest, Task<UssdResponse>>> runners)
         {
             _handlers.TryAdd(code, runners);
         }
     
-        private async Task<UssdResponse> ProcessAsync(UssdScreen screen, UssdRequest request)
+        private async Task<UssdResponse> ProcessAsync(UssdScreen screen, TRequest request)
         {
             var routes = _routes.Where(m => m.Code == screen.Code && m.Prev == screen.Prev?.Task);
             if(!routes.Any()) return new UssdResponse { Status = false, Message = "END Invalid code or route."};
@@ -69,12 +69,12 @@ namespace UssdBuilder.Services
             return await Execute(screen, request);
         }
 
-        private async Task<UssdResponse> Execute(UssdScreen screen, UssdRequest request)
+        private async Task<UssdResponse> Execute(UssdScreen screen, TRequest request)
         {
             return await _handlers[screen.Code][screen.Task].Invoke(screen, request);
         }
 
-        public async Task<string> HandleAsync(UssdRequest request)
+        public async Task<string> HandleAsync(TRequest request)
         {
             var result = string.Empty;
 
@@ -86,7 +86,8 @@ namespace UssdBuilder.Services
                 {
                     foreach (var item in chunks)
                     {
-                        result = await HandleScreenAsync(request with { Text = item });
+                        request.Text = item;
+                        result = await HandleScreenAsync(request);
                     }
                 }
                 else
@@ -102,7 +103,7 @@ namespace UssdBuilder.Services
             return result;
         }
     
-        private async Task<string> HandleScreenAsync(UssdRequest request)
+        private async Task<string> HandleScreenAsync(TRequest request)
         {
             UssdScreen current = new()
             {

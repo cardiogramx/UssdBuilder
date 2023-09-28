@@ -1,7 +1,7 @@
 
 # UssdBuilder
 
-A lightweight and lightning-fast ussd library
+USSD may be unstructured, but who says your code has to be? Here is a lightweight and lightning-fast ussd library for advocates of clean and scalable code.
 
 ### INTRODUCTION
 
@@ -35,7 +35,7 @@ builder.Services.AddUssdServer();
 this.server.AddRoute(new UssdRoute
 {
     Code = "000",
-    Prev = null,
+    Prev = null, //no previous screen means this is a new ussd session
     Regx = (_, _) => true, //use this if you want your request to proceed regardless of user input
     Goto = "welcome"
 });
@@ -130,9 +130,9 @@ public async Task<IActionResult> Handle([FromBody] UssdRequest model)
 }
 ```
   
-### Important Notes
+### Important note
 
-1. Complex input (e.g *0*0*2#) is handled by default by split and iteration over splitted inputs. To disable this behaviour, use
+1. Complex input (e.g \*0\*0*2#) is handled by default using `string.Split(...)` and iteration over splitted inputs. To disable this behaviour, use
 
 ```javascript
 builder.Services.AddUssdServer(opt =>
@@ -142,4 +142,14 @@ builder.Services.AddUssdServer(opt =>
 
 ```
 
-2. For full use-case, see [sample project](https://github.com/cardiogramx/UssdBuilder)
+2. A single ussd server or endpoint can serve multiple ussd codes, you just have to add routes and handlers for the different codes you want the server to process.
+
+3. `Route.Regx` is not meant to do more than input validation, do your complex work in your handler
+
+4. For more details, see [sample projects](https://github.com/cardiogramx/UssdBuilder)
+
+5. PRs are welcome.
+
+6. Having a problem? Verify that you are implementing rightly and if the problem persists, create an issue.
+
+7. Want to hire competent engineer(s) for a ussd application? [Shoot me an email](mailto:kolawole.ox@gmail.com)
