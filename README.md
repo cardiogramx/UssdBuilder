@@ -83,30 +83,30 @@ this.server.AddRoute(new UssdRoute
 this.server.AddHandlers("000", new()
 {
      {"welcome", async (UssdScreen current, UssdRequest request) => {
-
-         return await Task.FromResult(new UssdResponse
+         // do some async work
+         return new UssdResponse
          {
             Status = true,
             Message = "CON Welcome.\nEnter \n1. To say hello \n2. To say goodbye \n3. To repeat"
-         });
+         };
      }},
 
      {"sayhello", async (UssdScreen current, UssdRequest request) => {
-
-         return await Task.FromResult(new UssdResponse
+         // do some async work
+         return new UssdResponse
          {
             Status = true,
             Message = $"END Hello world. User input was {request.Text}"
-         });
+         };
      }},
      
      {"goodbye", async (UssdScreen current, UssdRequest request) => {
-
-         return await Task.FromResult(new UssdResponse
+         // do some async work
+         return new UssdResponse
          {
             Status = true,
             Message = $"END Goodbye. User input was {request.Text}"
-         });
+         };
      }},
 });
 ```
@@ -148,8 +148,8 @@ builder.Services.AddUssdServer(opt =>
 
 4. For more details, see [sample projects](https://github.com/cardiogramx/UssdBuilder)
 
-5. PRs are welcome.
+5. PRs are welcome. 
 
-6. Having a problem? Verify that you are implementing rightly and if the problem persists, create an issue.
+6. Having a problem? Verify that you are implementing rightly, check sample projects, and if the problem persists, create an issue.
 
 7. Want to hire competent engineer(s) for a ussd application? [Shoot me an email](mailto:kolawole.ox@gmail.com)
