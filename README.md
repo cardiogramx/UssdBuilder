@@ -1,7 +1,7 @@
 
 # UssdBuilder
 
-USSD may be unstructured, but who says your code has to be? Here is a lightweight and lightning-fast ussd library for advocates of clean and scalable code.
+A lightweight and lightning-fast ussd library for advocates of clean and scalable code.
 
 ### INTRODUCTION
 
@@ -137,7 +137,7 @@ builder.Services.AddUssdServer(opt =>
 
 ```
 
-2. The default sliding expiration of a ussd session 40 seconds. To override this behaviour, use
+2. The default sliding expiration of a ussd session 40 seconds. To override this session behaviour, use
 
 ```javascript
 builder.Services.AddUssdServer(opt =>
