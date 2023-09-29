@@ -15,24 +15,32 @@ namespace UssdBuilder.Services
     public class UssdServer<TRequest> : IUssdServer<TRequest> where TRequest : IUssdRequest
     {
         private readonly IDistributedCache _cache;
-        private readonly DistributedCacheEntryOptions _cacheOptions;
         private readonly Dictionary<string, Dictionary<string, Func<UssdScreen, TRequest, Task<UssdResponse>>>> _handlers = new();
-        private readonly UssdServerOption _serverOptions;
         private readonly List<UssdRoute> _routes = new();
 
-        public string BackButton { get; set; } = "0";
-        public string HomeButton { get; set; } = "00";
+        private readonly bool _enableInputSplit = true;
+        private readonly char[] _inputSplitSeparators = new char[] { '*', '#' };
+        private readonly string _backButton = "0";
+        private readonly string _homeButton = "00";
 
-        public UssdServer(IDistributedCache cache, IOptions<DistributedCacheEntryOptions> cacheOptions, IOptions<UssdServerOption> serverOptions)
+        private readonly DistributedCacheEntryOptions _cacheOptions = new DistributedCacheEntryOptions
+        {
+            SlidingExpiration = TimeSpan.FromSeconds(40)
+        };
+
+        public UssdServer(IDistributedCache cache, IOptions<UssdServerOption> serverOptions)
         {
             _cache = cache;
-            _cacheOptions = cacheOptions.Value;
-            _serverOptions = serverOptions.Value;
+            _cacheOptions = serverOptions.Value.CacheEntryOptions ?? _cacheOptions;
+            _enableInputSplit = serverOptions.Value.EnableInputSplit ?? true;
+            _inputSplitSeparators = serverOptions.Value.InputSplitSeparators ?? _inputSplitSeparators;
+            _backButton = serverOptions.Value.BackButton ?? _backButton;
+            _homeButton = serverOptions.Value.HomeButton ?? _homeButton;
          }
 
-        public IQueryable<string> GetCodes()
+        public IEnumerable<string> GetCodes()
         {
-            return _handlers.Keys.AsQueryable();
+            return _handlers.Keys.AsEnumerable();
         }
 
         public void AddRoute(UssdRoute route)
@@ -82,9 +90,9 @@ namespace UssdBuilder.Services
         {
             var result = string.Empty;
 
-            if (_serverOptions.EnableInputSplit && _serverOptions.InputSplitSeparators?.Length > 0)
+            if (_enableInputSplit && _inputSplitSeparators?.Length > 0)
             {
-                var chunks = request.Text.Split(_serverOptions.InputSplitSeparators).Where(s => !string.IsNullOrWhiteSpace(s));
+                var chunks = request.Text.Split(_inputSplitSeparators).Where(s => !string.IsNullOrWhiteSpace(s));
 
                 if (chunks.Any())
                 {
@@ -127,11 +135,11 @@ namespace UssdBuilder.Services
 
             current.Prev = cache is not null ? cache : new UssdScreen { Task = null, Code = request.ServiceCode };
 
-            if(request.Text.Equals(BackButton))
+            if(request.Text.Equals(_backButton))
             {
                 current = current.Prev?.Prev ?? new UssdScreen { Code = request.ServiceCode };
             }
-            else if(request.Text.Equals(HomeButton))
+            else if(request.Text.Equals(_homeButton))
             {
                 current = new UssdScreen { Code = request.ServiceCode };
             }

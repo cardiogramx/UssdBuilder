@@ -18,10 +18,10 @@
     <NeutralLanguage>en-GB</NeutralLanguage>
     <IsPublishable>True</IsPublishable>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <PackageReleaseNotes>New + Improved
 
-- Reduced package size by prunning unused libraries</PackageReleaseNotes>
+- Removed the need to inject DistributedCacheEntryOptions</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using UssdBuilder.Models;
 
@@ -41,7 +40,7 @@ namespace UssdBuilder.Services
         /// Returns all ussd codes in use by the server.
         /// </summary>
         /// <returns></returns>
-        IQueryable<string> GetCodes();
+        IEnumerable<string> GetCodes();
 
         /// <summary>
         /// Deletes a ussd session.
@@ -49,15 +48,5 @@ namespace UssdBuilder.Services
         /// <param name="sessionId"></param>
         /// <returns></returns>
         Task DeleteAsync(string sessionId);
-
-        /// <summary>
-        /// Gets or sets the ussd back button input. Default is "0"
-        /// </summary>
-        string BackButton { get; set; }
-
-        /// <summary>
-        /// Gets or sets the ussd home button input. Default is "00"
-        /// </summary>
-        string HomeButton { get; set; }
     }
 }

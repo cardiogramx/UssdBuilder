@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using UssdBuilder.Models;
 using UssdBuilder.Services;
@@ -14,13 +14,7 @@ namespace UssdBuilder.Extensions.AspNetCore
         /// <returns></returns>
         public static IServiceCollection AddUssdServer(this IServiceCollection services)
         {
-            services.Configure<UssdServerOption>(opt =>
-            {
-                opt.EnableInputSplit = true;
-                opt.InputSplitSeparators = new char[] { '*', '#' };
-            });
-
-            return services.AddSingleton<IUssdServer<UssdRequest>, UssdServer<UssdRequest>>();
+            return services.Configure<UssdServerOption>(opt => new UssdServerOption()).AddSingleton<IUssdServer<UssdRequest>, UssdServer<UssdRequest>>();
         }
 
         /// <summary>
@@ -31,10 +25,9 @@ namespace UssdBuilder.Extensions.AspNetCore
         /// <returns></returns>
         public static IServiceCollection AddUssdServer(this IServiceCollection services, Action<UssdServerOption> setupAction)
         {
+            if(setupAction is null) throw new ArgumentNullException(nameof(setupAction));
             return services.Configure(setupAction).AddSingleton<IUssdServer<UssdRequest>, UssdServer<UssdRequest>>();
         }
-
-
 
         /// <summary>
         /// Registers a singleton instance of <see cref="UssdServer"/> for a custom implementation of <seealso cref="IUssdRequest"/>. 
@@ -43,13 +36,7 @@ namespace UssdBuilder.Extensions.AspNetCore
         /// <returns></returns>
         public static IServiceCollection AddUssdServerFor<TRequest>(this IServiceCollection services) where TRequest : IUssdRequest
         {
-            services.Configure<UssdServerOption>(opt =>
-            {
-                opt.EnableInputSplit = true;
-                opt.InputSplitSeparators = new char[] { '*', '#' };
-            });
-
-            return services.AddSingleton<IUssdServer<TRequest>, UssdServer<TRequest>>();
+            return services.Configure<UssdServerOption>(opt => new UssdServerOption()).AddSingleton<IUssdServer<TRequest>, UssdServer<TRequest>>();
         }
 
         /// <summary>
@@ -60,6 +47,7 @@ namespace UssdBuilder.Extensions.AspNetCore
         /// <returns></returns>
         public static IServiceCollection AddUssdServerFor<TRequest>(this IServiceCollection services, Action<UssdServerOption> setupAction) where TRequest : IUssdRequest
         {
+            if(setupAction is null) throw new ArgumentNullException(nameof(setupAction));
             return services.Configure(setupAction).AddSingleton<IUssdServer<TRequest>, UssdServer<TRequest>>();
         }
     }

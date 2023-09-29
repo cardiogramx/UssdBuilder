@@ -18,11 +18,6 @@ This library intends to solve the issue above, enabling you build lightning-fast
 ```javascript
 builder.Services.AddDistributedMemoryCache(); //any implementation of IDistributedCache works, visit https://learn.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-6.0
 
-builder.Services.Configure<DistributedCacheEntryOptions>(opts =>
-{
-    opts.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30); //ussd session timeout
-});
-
 builder.Services.AddUssdServer();
 ```
 
@@ -142,14 +137,27 @@ builder.Services.AddUssdServer(opt =>
 
 ```
 
-2. A single ussd server or endpoint can serve multiple ussd codes, you just have to add routes and handlers for the different codes you want the server to process.
+2. The default sliding expiration of a ussd session 40 seconds. To override this behaviour, use
 
-3. `Route.Regx` is not meant to do more than input validation, do your complex work in your handler
+```javascript
+builder.Services.AddUssdServer(opt =>
+{
+    opt.CacheEntryOptions = new DistributedCacheEntryOptions
+    {
+        //...add your cache session options here
+    };
+});
 
-4. For more details, see [sample projects](https://github.com/cardiogramx/UssdBuilder)
+```
 
-5. PRs are welcome. 
+3. A single ussd server or endpoint can serve multiple ussd codes, you just have to add routes and handlers for the different codes you want the server to process.
 
-6. Having a problem? Verify that you are implementing rightly, check sample projects, and if the problem persists, create an issue.
+4. For the sake of clean code, `Route.Regx` is not meant to do more than input validation, do your complex work in your handler.
 
-7. Want to hire competent engineer(s) for a ussd application? [Shoot me an email](mailto:kolawole.ox@gmail.com)
+5. For more details, see [sample projects](https://github.com/cardiogramx/UssdBuilder/tree/master/sample)
+
+6. PRs are welcome. 
+
+7. Having a problem? Verify that you are implementing rightly, check sample projects, and if the problem persists, create an issue.
+
+8. Want to hire competent engineer(s) for a ussd application? [Shoot me an email](mailto:kolawole.ox@gmail.com)

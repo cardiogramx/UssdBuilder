@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace UssdBuilder.Models
 {
@@ -89,10 +90,22 @@ namespace UssdBuilder.Models
         /// <summary>
         /// Enables ussd input split. Default is true 
         /// </summary>
-        public bool EnableInputSplit { get; set; }
+        public bool? EnableInputSplit { get; set; }
         /// <summary>
         /// Ussd input split separators. Default is ['*', '#'] 
         /// </summary>
         public char[] InputSplitSeparators { get; set; }
+        /// <summary>
+        /// Ussd session options. 
+        /// </summary>
+        public DistributedCacheEntryOptions CacheEntryOptions { get; set; }
+        /// <summary>
+        /// Gets or sets the ussd back button input. Default is "0"
+        /// </summary>
+        public string BackButton { get; set; }
+        /// <summary>
+        /// Gets or sets the ussd home button input. Default is "00"
+        /// </summary>
+        public string HomeButton { get; set; }
     }
 }

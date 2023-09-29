@@ -14,6 +14,28 @@ namespace SampleApplication.Controllers
         {
             this.server = server;
 
+            AddRequiredRoutes();
+            AddRequiredHandlers();
+        }
+
+        [HttpPost("Handle")]
+        public async Task<IActionResult> Handle([FromBody] UssdRequest model)
+        {
+            try
+            {
+                var result = await server.HandleAsync(model);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                await server.DeleteAsync(model.SessionId);
+                return Ok($"END An error occurred: {ex.Message}");
+            }
+        }
+
+
+        private void AddRequiredRoutes()
+        {
             this.server.AddRoute(new UssdRoute
             {
                 Code = "000",
@@ -57,8 +79,10 @@ namespace SampleApplication.Controllers
                 Regx = (_, req) => req.Text != "1" && req.Text != "2",  //Regx could also be used for input validation like input length check, etc.
                 Goto = "welcome"
             });
+        }
 
-
+        private void AddRequiredHandlers()
+        {
             this.server.AddHandlers("000", new()
             {
                  {"welcome", async (UssdScreen current, UssdRequest request) => {
@@ -98,22 +122,7 @@ namespace SampleApplication.Controllers
                  }},
             });
         }
-
-        [HttpPost("Handle")]
-        public async Task<IActionResult> Handle([FromBody] UssdRequest model)
-        {
-            try
-            {
-                var result = await server.HandleAsync(model);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                await server.DeleteAsync(model.SessionId);
-                return Ok($"END An error occurred: {ex.Message}");
-            }
-        }
-
+    
         private async Task DoSomeWork()
         {
             await Task.CompletedTask;
