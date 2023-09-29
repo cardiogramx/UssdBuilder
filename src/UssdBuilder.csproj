@@ -11,14 +11,14 @@
     <RepositoryUrl>https://github.com/cardiogramx/UssdBuilder</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>ussd;chippercall;africastalking</PackageTags>
-    <PackAsTool>True</PackAsTool>
+    <PackAsTool>False</PackAsTool>
     <Authors>cardiogramx</Authors>
     <Company>Felix Kolawole</Company>
     <Product>Ussd Builder</Product>
     <NeutralLanguage>en-GB</NeutralLanguage>
     <IsPublishable>True</IsPublishable>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <PackageReleaseNotes>New + Improved
 
 - Reduced package size by prunning unused libraries</PackageReleaseNotes>
